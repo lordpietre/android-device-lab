@@ -1,7 +1,7 @@
 .PHONY: help lint test package clean check-tools
 
 SKILL := android-device-lab
-OUT   := ../$(SKILL).zip
+OUT   := $(SKILL).zip
 
 help:
 	@echo "android-device-lab"
@@ -18,7 +18,7 @@ test:
 	@bash tests/smoke.sh
 
 package: clean
-	@cd .. && rm -f $(OUT) && zip -qr $(OUT) $(SKILL) -x '$(SKILL)/*/.git/*' -x '$(SKILL)/.git/*'
+	@cd .. && rm -f $(OUT) && zip -qr $(OUT) $(SKILL) -x '$(SKILL)/.git/*' -x '$(SKILL)/*/.git/*'
 	@echo "built $(OUT)"
 
 clean:

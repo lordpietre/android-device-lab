@@ -143,7 +143,8 @@ github_asset() {
   url=$(curl -fsSL "$api" 2>/dev/null | jq -r --arg p "$pattern" \
         '.assets[] | select(.name | test($p)) | .browser_download_url' 2>/dev/null | head -1)
   [ -n "$url" ] && [ "$url" != "null" ] || { warn "no asset matching /$pattern/ in $repo"; return 1; }
-  local out="$BIN/$(basename "$url")"
+  local out
+  out="$BIN/$(basename "$url")"
   mkdir -p "$BIN"
   step "download $(basename "$url")"
   curl -fL --retry 2 -o "$out" "$url" 2>&1 | tee -a "$LOG" | tail -2 || return 1
@@ -158,18 +159,19 @@ report_tools() {
   say ""
   say "Tool status"
   say "-----------"
-  local missing=0
+  local missing_count=0
+  local entry name why
   for entry in "${TOOLS[@]}"; do
-    local name="${entry%%|*}" why="${entry#*|}"
+    name="${entry%%|*}"; why="${entry#*|}"
     if have "$name"; then
       printf '  [ok]      %-18s %s\n' "$name" "$why"
     else
       printf '  [missing] %-18s %s\n' "$name" "$why"
-      missing=$((missing + 1))
+      missing_count=$((missing_count + 1))
     fi
   done
   say ""
-  say "$missing tool(s) missing."
+  say "$missing_count tool(s) missing."
 }
 
 # --------------------------------------------------------------------- checks

@@ -177,8 +177,9 @@ if command -v mkbootimg >/dev/null 2>&1 && command -v unpack_bootimg >/dev/null 
     ( cd "$WORK" && unpack_bootimg --boot_img "mk/boot_v$v.img" --out "aosp/v$v" --format=mkbootimg ) >/dev/null 2>&1
     python3 "$ROOT/scripts/lib/bootimg.py" extract "$MKDIR/boot_v$v.img" "$WORK/mine/v$v" >/dev/null 2>&1
     same=1
-    for f in $(ls "$WORK/aosp/v$v" 2>/dev/null); do
-      cmp -s "$WORK/aosp/v$v/$f" "$WORK/mine/v$v/boot_v$v.$f" || same=0
+    for f in "$WORK/aosp/v$v"/*; do
+      [ -f "$f" ] || continue
+      cmp -s "$f" "$WORK/mine/v$v/boot_v$v.$(basename "$f")" || same=0
     done
     if [ "$same" -eq 1 ]; then ok "boot v$v: identical to AOSP unpack_bootimg"; else bad "boot v$v: differs from AOSP unpack_bootimg"; fi
   done
@@ -190,9 +191,11 @@ if command -v mkbootimg >/dev/null 2>&1 && command -v unpack_bootimg >/dev/null 
     ( cd "$WORK" && unpack_bootimg --boot_img "mk/vb_v$v.img" --out "aospvb$v" --format=mkbootimg ) >/dev/null 2>&1
     python3 "$ROOT/scripts/lib/bootimg.py" extract "$MKDIR/vb_v$v.img" "$WORK/minevb$v" >/dev/null 2>&1
     same=1
-    for f in $(ls "$WORK/aospvb$v" 2>/dev/null | grep -v ramdisk-by-name); do
-      [ -s "$WORK/aospvb$v/$f" ] || continue
-      cmp -s "$WORK/aospvb$v/$f" "$WORK/minevb$v/vb_v$v.$f" || same=0
+    for f in "$WORK/aospvb$v"/*; do
+      [ -f "$f" ] || continue
+      case "$(basename "$f")" in vendor-ramdisk-by-name) continue ;; esac
+      [ -s "$f" ] || continue
+      cmp -s "$f" "$WORK/minevb$v/vb_v$v.$(basename "$f")" || same=0
     done
     if [ "$same" -eq 1 ]; then ok "vendor_boot v$v: identical to AOSP unpack_bootimg"; else bad "vendor_boot v$v: differs from AOSP unpack_bootimg"; fi
   done
