@@ -1,0 +1,56 @@
+name: Bug report
+description: Something in the skill misbehaved
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Please do **not** paste serials, IMEIs, MAC addresses,
+        partition dumps or firmware binaries. Use the device hash the scripts print.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you run, and what did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands and output
+      description: The exact commands and their output (identifiers redacted)
+      render: shell
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - scripts/setup-host.sh
+        - scripts/device-info.sh
+        - scripts/firmware-triage.sh
+        - scripts/backup-partitions.sh
+        - scripts/lib/bootimg.py
+        - SKILL.md instructions
+        - references
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: host
+    attributes:
+      label: Host
+      description: OS and versions, e.g. "Debian 12, adb 1.0.41, fastboot 35.0.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: device
+    attributes:
+      label: Device (optional)
+      description: Manufacturer, model, codename, SoC. No serials.

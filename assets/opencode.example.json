@@ -1,0 +1,31 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "anthropic/claude-sonnet-4-5",
+  "permissions": [
+    { "action": "skill", "resource": "android-device-lab", "effect": "allow" },
+    { "action": "shell", "resource": "*", "effect": "ask" },
+    { "action": "shell", "resource": "adb devices*", "effect": "allow" },
+    { "action": "shell", "resource": "adb -s * get-state*", "effect": "allow" },
+    { "action": "shell", "resource": "adb shell getprop*", "effect": "allow" },
+    { "action": "shell", "resource": "adb -s * shell getprop*", "effect": "allow" },
+    { "action": "shell", "resource": "fastboot devices*", "effect": "allow" },
+    { "action": "shell", "resource": "fastboot getvar*", "effect": "allow" },
+    { "action": "shell", "resource": "fastboot -s * getvar*", "effect": "allow" },
+    { "action": "shell", "resource": "bash scripts/device-info.sh*", "effect": "allow" },
+    { "action": "shell", "resource": "bash scripts/firmware-triage.sh*", "effect": "allow" },
+    { "action": "shell", "resource": "bash scripts/lint.sh*", "effect": "allow" },
+    { "action": "shell", "resource": "bash scripts/setup-host.sh*", "effect": "ask" },
+    { "action": "shell", "resource": "bash scripts/backup-partitions.sh*", "effect": "ask" },
+    { "action": "shell", "resource": "fastboot boot*", "effect": "ask" },
+    { "action": "shell", "resource": "fastboot flash*", "effect": "ask" },
+    { "action": "shell", "resource": "fastboot flashing*", "effect": "ask" },
+    { "action": "shell", "resource": "fastboot erase*", "effect": "deny" },
+    { "action": "shell", "resource": "fastboot format*", "effect": "deny" },
+    { "action": "shell", "resource": "fastboot flash bootloader*", "effect": "deny" },
+    { "action": "shell", "resource": "fastboot flash modem*", "effect": "deny" },
+    { "action": "shell", "resource": "fastboot flash persist*", "effect": "deny" },
+    { "action": "shell", "resource": "adb shell dd *of=/dev/block*", "effect": "deny" },
+    { "action": "shell", "resource": "dd *of=/dev/*", "effect": "deny" }
+  ],
+  "instructions": ["AGENTS.md"]
+}

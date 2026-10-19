@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends shellcheck
+
+      - name: Run lint
+        run: bash scripts/lint.sh --strict
+
+  smoke:
+    name: Smoke tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends zip unzip file binutils mkbootimg
+
+      - name: Run smoke tests
+        run: bash tests/smoke.sh
+
+  json:
+    name: JSON assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON files
+        run: |
+          for f in $(find . -name '*.json' -not -path './.git/*'); do
+            echo "checking $f"
+            python3 -c "import json,sys;json.load(open(sys.argv[1]))" "$f"
+          done
+      - name: Check opencode permission rules
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          for path in ("assets/opencode.permissions.example.json",
+                       "assets/opencode.permissions.v1.example.json"):
+              data = json.load(open(path))
+              rules = data.get("permissions")
+              if rules is None:
+                  rules = list(data.get("permission", {}).get("bash", {}).items())
+                  rules = [{"action": "shell", "resource": r, "effect": e} for r, e in rules]
+              assert rules, path
+              for rule in rules:
+                  assert set(rule) == {"action", "resource", "effect"}, (path, rule)
+                  assert rule["effect"] in ("allow", "ask", "deny"), (path, rule)
+              print(f"{path}: {len(rules)} rules ok")
+          PY

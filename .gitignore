@@ -1,0 +1,40 @@
+# Recon and triage output
+android-recon-*/
+fw-triage-*/
+recon-*/
+fw-*/
+*.recon/
+
+# Device backups: these contain unique identifiers (IMEI, calibration). Never commit.
+device-backup-*/
+backups/
+*.img
+!assets/**/*.img
+*.bin
+!assets/**/*.bin
+
+# Firmware packages and images
+firmware/
+*.zip
+!android-device-lab.zip
+*.tar
+*.tar.md5
+*.7z
+payload.bin
+
+# Tooling
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
