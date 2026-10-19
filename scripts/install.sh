@@ -120,9 +120,13 @@ step "Installing the '$SKILL_ID' skill into $ROOT"
 if [ -d "$SKILL_DIR/.git" ]; then
   if command -v git >/dev/null 2>&1; then
     step "updating the existing checkout"
-    git -C "$SKILL_DIR" pull --ff-only >/dev/null 2>&1 \
-      && say "  updated to $(git -C "$SKILL_DIR" rev-parse --short HEAD)" \
-      || warn "  git pull failed; keeping the current version"
+    # The installed copy is a managed artifact: make it match the remote exactly.
+    git -C "$SKILL_DIR" fetch --depth 1 origin "$BRANCH" >/dev/null 2>&1
+    if git -C "$SKILL_DIR" reset --hard "origin/$BRANCH" >/dev/null 2>&1; then
+      say "  updated to $(git -C "$SKILL_DIR" rev-parse --short HEAD)"
+    else
+      warn "  update failed; keeping the current version"
+    fi
   fi
 else
   if [ -n "$SOURCE" ]; then
