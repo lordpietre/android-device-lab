@@ -19,26 +19,57 @@ write, the exact command shown before it runs, and an explicit confirmation.
 
 ## Install
 
+### The easy way (one command)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lordpietre/android-device-lab/main/scripts/install.sh | bash
+```
+
+That does everything:
+
+1. installs the skill into `~/.config/opencode/skills/android-device-lab`;
+2. merges the safety permission rules into `~/.config/opencode/opencode.json`
+   (backing your config up to `opencode.json.bak` first);
+3. prints the next steps.
+
+Restart opencode and the skill is ready. It is also usable right away with
+`@android-device-lab` or from the skill picker.
+
+Other options:
+
+```bash
+# project-local instead of global
+curl -fsSL https://raw.githubusercontent.com/lordpietre/android-device-lab/main/scripts/install.sh | bash -s -- --project
+
+# skip the opencode.json merge
+curl -fsSL https://raw.githubusercontent.com/lordpietre/android-device-lab/main/scripts/install.sh | bash -s -- --no-permissions
+
+# remove it again
+curl -fsSL https://raw.githubusercontent.com/lordpietre/android-device-lab/main/scripts/install.sh | bash -s -- --uninstall
+```
+
+### Manual
+
 The skill id is the directory name, so the folder has to be called `android-device-lab`.
 
 ```bash
 # global (recommended)
-git clone https://github.com/<you>/android-device-lab.git ~/.config/opencode/skills/android-device-lab
+git clone https://github.com/lordpietre/android-device-lab.git ~/.config/opencode/skills/android-device-lab
 
 # project-local
-git clone https://github.com/<you>/android-device-lab.git .opencode/skills/android-device-lab
+git clone https://github.com/lordpietre/android-device-lab.git .opencode/skills/android-device-lab
 ```
 
 opencode also reads `~/.claude/skills/`, `~/.agents/skills/`, `.claude/skills/` and
 `.agents/skills/`, so the same folder works with the Claude-style layout.
 
-### Permissions (recommended)
+### Permissions (optional, the installer does it for you)
 
-Copy `assets/opencode.permissions.example.json` (opencode V2) or
-`assets/opencode.permissions.v1.example.json` (opencode V1) into your
-`opencode.json(c)` and merge the `permissions` array. Those rules allow the
-read-only commands, ask before any write to a device, and deny the operations that
-can hard-brick a phone.
+`assets/opencode.permissions.example.json` (opencode V2) or
+`assets/opencode.permissions.v1.example.json` (opencode V1) contain the rules that
+allow the read-only commands, ask before any write to a device, and deny the
+operations that can hard-brick a phone. Merge the `permissions` array into your
+`opencode.json(c)`.
 
 > The last matching rule wins, so the broad `"*": "ask"` rule comes first and the
 > specific rules follow it.
@@ -101,7 +132,8 @@ assumption as a fact.
 android-device-lab/
 ├── SKILL.md                        the skill itself
 ├── scripts/
-│   ├── setup-host.sh               install/verify the host toolchain
+│   ├── install.sh                   one-command installer (skill + permissions)
+│   ├── setup-host.sh                install/verify the host toolchain
 │   ├── device-info.sh              read-only recon (adb / fastboot)
 │   ├── firmware-triage.sh          offline firmware unpack + inventory
 │   ├── backup-partitions.sh        read-only backup of unique partitions

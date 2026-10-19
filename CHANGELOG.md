@@ -7,6 +7,11 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- `scripts/install.sh`: one-command installer. It installs the skill into
+  `~/.config/opencode/skills/android-device-lab` (or a project directory) and
+  merges the permission rules into `opencode.json`, keeping a `.bak` of the
+  previous config. Supports `--project`, `--no-permissions`, `--uninstall` and
+  `--yes`.
 - `scripts/setup-host.sh`: installs and verifies the host toolchain (adb, fastboot,
   dtc, avbtool, payload-dumper-go, simg2img, lpunpack, pmbootstrap, mtkclient) with
   `--check`, `--minimal`, `--full`, `--dry-run` and `--prefix`. It never removes or

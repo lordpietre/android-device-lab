@@ -139,6 +139,7 @@ Short, factual. Distinguish **observed** (from the device/firmware), **documente
 Use tables for device facts and subsystem status. Keep the exact commands you ran.
 
 ## Bundled resources
+- `scripts/install.sh`: install the skill into opencode and merge the permission rules.
 - `scripts/setup-host.sh`: install and verify the host toolchain.
 - `scripts/device-info.sh`: read-only recon over adb/fastboot with redaction.
 - `scripts/firmware-triage.sh`: safe offline unpack and inventory of firmware.
